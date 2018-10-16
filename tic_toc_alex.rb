@@ -9,7 +9,7 @@ class Player
         puts "Nombre de parties: #{$counter}\n"
         puts ""
         puts "Bienvenue à vous!\n#{player_id}, Entre ton prénom : "  #demande au joueur son pseudo
-        @name = gets.chomp                        #user nick
+        @name = gets.chomp                       
         @symb = symb         #le symb va dépendre de l'argument (classique le "X" et le "O")
     end
 end
@@ -48,7 +48,7 @@ class Board
     def display_tuto
         tab = " 1 \| 2 \| 3 \n\-\-\-\|\-\-\-\|\-\-\- \n 4 \| 5 \| 6 \n\-\-\-\|\-\-\-\|\-\-\- \n 7 \| 8 \| 9 "
         puts "\nComment jouer:\nChoisis une case en tapant sa lettre:"
-        puts tab
+        puts tab.colorize(:yellow)
         puts "----------------------------\n"
         sleep(2) #est une fonction qui ralentie le programme durant la période donnée. Découverte surprise mais intéressante
     end
@@ -70,7 +70,7 @@ class Game
 
         puts"\n---------------------------"
         puts "\nBienvenue au Tic Tac Toe! !"
-        puts "Joueur 1: #{@players[0].name} ------ Joueur 2: #{@players[1].name}" 
+        puts "Joueur 1: #{@players[0].name.colorize(:red)} ------ Joueur 2: #{@players[1].name.colorize(:blue)}" 
 
         @board = Board.new  #créer le board
         @board.display_tuto
