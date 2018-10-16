@@ -1,13 +1,15 @@
+require 'colorize'
+
 class Player
 
   attr_accessor :name, :symb     #allow the class var name and symb to be read and modified without needing a method
 
+    $compteur = 0
   def initialize(player_id, symb)   #called on Player.new
-  	compteur = 0
-  	puts "Nombre de parties: #{compteur}"
+  	puts "Nombre de parties: #{$compteur}"
     puts "Bienvenue à vous!\n#{player_id}, Entre ton prénom : "  #ask the player in creation to set its nickname
     @name = gets.chomp                        #user nick
-    @symb = symb          #x or o depending on arg
+    @symb = symb         #x or o depending on arg
   end
 end
 
@@ -16,19 +18,13 @@ class Case  #case object
   attr_accessor :status  #access the status of the case called
 
   def initialize(val)
-
     @status = val   #defaultly set on " " via board class
-
   end
-
 end
-
 
 class Board   #set and print the board
 
   def initialize   #generate all the cases in global variables
-
-
     $c1 = Case.new(" ")
     $c2 = Case.new(" ")
     $c3 = Case.new(" ")
@@ -38,37 +34,28 @@ class Board   #set and print the board
     $c7 = Case.new(" ")
     $c8 = Case.new(" ")
     $c9 = Case.new(" ")
-
   end
 
   def display_board  #print the grid via a string .... a bit dirty but functional
-
      # \n means go to newline ... and a \ is needed before every special character (such as \-|/....)
 
      tab = " #{$c1.status} \| #{$c2.status} \| #{$c3.status} \n\-\-\-\|\-\-\-\|\-\-\- \n #{$c4.status} \| #{$c5.status} \| #{$c6.status} \n\-\-\-\|\-\-\-\|\-\-\- \n #{$c7.status} \| #{$c8.status} \| #{$c9.status} "
 
     puts tab #prints the tab 
-
   end
 
   def display_tuto
-
     tab = " 1 \| 2 \| 3 \n\-\-\-\|\-\-\-\|\-\-\- \n 4 \| 5 \| 6 \n\-\-\-\|\-\-\-\|\-\-\- \n 7 \| 8 \| 9 "
-
-
     puts "\nComment jouer:\nChoisis une case en tapant sa lettre:"
     puts tab #prints the tutorial tab
     puts "----------------------------\n"
     sleep(2) #sleeps 2sec so you can read the quick tutorial
-
   end
-
 end
-
 
 class Game
 
-  def initialize    #launches when Game.new is called
+  def initialize   #launches when Game.new is called
     @turn = 0    #turn counter
     @choice_left = ["1","2","3","4","5","6","7","8","9"] # list the none used cases in case a player pick a used one
   end
@@ -77,8 +64,8 @@ class Game
 
     puts "Initialisation ..."
     @players = []
-    @players[0] = Player.new("Joueur 1 (Tu sera le rose)", "♡") # create player 1 on the players tab[0]
-    @players[1] = Player.new("Joueur 2 (Tu sera le bleu)", "❤") #create player 2 on the players tab [1]
+    @players[0] = Player.new("Joueur 1 (Tu sera le rouge)", "❤".colorize(:red)) # create player 1 on the players tab[0]
+    @players[1] = Player.new("Joueur 2 (Tu sera le bleu)", "❤".colorize(:blue)) #create player 2 on the players tab [1]
 
     puts"\n---------------------------"
     puts "\nBienvenue au Tic Tac Toe! !"
@@ -87,17 +74,15 @@ class Game
     @board = Board.new  #generate the board
     @board.display_tuto #display it
 
-    
     while true #infinite loop
-
       play_turn #method in wich the player make it's choice
-
       if win_combination_check == true   #checks in the methode is someone has won yet
         puts "\nEt #{@players[@turn%2].name} gagne!" #display victory message :D
         puts "Voulez vous rejouer? (y/n)"
         answer = gets.chomp
-        	if answer == "y"
-        		game = Game.new #create a new game 
+            if answer == "y"
+                $compteur += 1
+        		game = Game.new #create a new game
 				game.game_start #calls the start method that launch the game
 			else break
         	end
@@ -109,13 +94,12 @@ class Game
         	if answer == "y"
         		game = Game.new #create a new game
 				game.game_start #calls the start method that launch the game
-			else break
+            else 
+                abort("Merci d'avoir joué !")
         	end
-
       end
       @turn += 1 #iterate turn counter
     end
-
   end
 
   def play_turn #player's action's method
@@ -157,8 +141,6 @@ class Game
       end
 
       @board.display_board #displays the board updated  then go back to the game loop
-      
-
     end
 
 
@@ -166,7 +148,6 @@ class Game
 
     #puts all the cases values in a tab
     @tab = [[$c1.status,$c2.status,$c3.status],[$c4.status,$c5.status,$c6.status],[$c7.status,$c8.status,$c9.status]]
-
 
     #check all the lines and else all the column
     (0..2).each do |i|
@@ -184,8 +165,6 @@ if ( @tab[0][0] == @tab[1][1] && @tab[1][1] == @tab[2][2] ) ||
   else
       return false #no winning combination found so return false
     end
-    
-
 end
 
 end
