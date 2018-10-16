@@ -15,3 +15,5 @@ Voici les règles du programme :
     Un effort sera à faire sur la présentation (par ex: board affiché de façon stylé, compteur des parties, couleurs, etc...
 
 Exercice réalisé par Alex et Corentin.
+
+Gem utilisée : colorize
