@@ -3,7 +3,6 @@ require 'colorize'
 class Player
 
   attr_accessor :name, :symb     #permet aux classes de variable name et symb d'être lues et modifiées sans avoir besoin de méthode
-
     $counter = 0
     def initialize(player_id, symb)   #appeler par Player.new
         puts "Nombre de parties: #{$counter}\n"
@@ -39,9 +38,7 @@ class Board
 
     def display_board  #affiche la grille via le string. Pas trouver bcp mieux...
      #Le \n permet de passer à la ligne et le "\" est nécéssaire avant chaque caractères spéciaux (comme "\-|/")
-
         tab = " #{$c1.status} \| #{$c2.status} \| #{$c3.status} \n\-\-\-\|\-\-\-\|\-\-\- \n #{$c4.status} \| #{$c5.status} \| #{$c6.status} \n\-\-\-\|\-\-\-\|\-\-\- \n #{$c7.status} \| #{$c8.status} \| #{$c9.status} "
-
         puts tab
     end
 
@@ -56,7 +53,7 @@ end
 
 class Game
 
-    def initialize   #se lance à l'appel de Game.new
+    def initialize(i=0, p1=0, p2=0, name1="", name2="")  #se lance à l'appel de Game.new
         @turn = 0
         @choice_left = ["1","2","3","4","5","6","7","8","9"] #liste des cases non utilisées dans le cas ou le joueur derai une répétition
     end
@@ -83,12 +80,12 @@ class Game
                 answer = gets.chomp
             if answer == "y"
                 $counter += 1
-        		game = Game.new #crée une nouvelle partie
+                game = Game.new #crée une nouvelle partie
 				game.game_start #lance le nouveau jeu
 			else break
             end
 
-            elsif @turn == 8  #8 car pas plus de possibilité dans ce jeu (attention : ne fonctionnera pas avec des jeu plus complexe)
+            elsif @turn == 8  #8 car pas plus de possibilité dans ce jeu (attention : ne fonctionnera pas avec des jeux plus complexes)
                 puts "\nC'est une égalité!"
                 puts "Voulez vous rejouer? (y/n)"
                 answer = gets.chomp
@@ -152,16 +149,16 @@ class Game
         #vérifie les lignes et les colonnes
         (0..2).each do |i|
         if @tab[i][0] == @tab[i][1] && @tab[i][1] == @tab[i][2]
-            return true unless @tab[i][0] == " " #return true unless one of the  first value of any line is = to blank
+            return true unless @tab[i][0] == " " #retourne "true" sauf si une des première valeurs, quelques soit la ligne, est = rien
 
         elsif @tab[0][i] ==@tab[1][i] && @tab[1][i] == @tab[2][i]
-            return true unless @tab[0][i] == " "#same here for column
+            return true unless @tab[0][i] == " "#pareil pour les colonnes
         end
         end
 
         if ( @tab[0][0] == @tab[1][1] && @tab[1][1] == @tab[2][2] ) ||
             ( @tab[0][2] == @tab[1][1] && @tab[1][1] == @tab[2][0] )
-            return true unless @tab[1][1] == " " #donne "true" sauf si la 5ème cases et vide "== ?"
+            return true unless @tab[1][1] == " " #donne "true" sauf si la 5ème cases est vide "== ?"
         else
             return false
         end
