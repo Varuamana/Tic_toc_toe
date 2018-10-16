@@ -2,29 +2,30 @@ require 'colorize'
 
 class Player
 
-  attr_accessor :name, :symb     #allow the class var name and symb to be read and modified without needing a method
+  attr_accessor :name, :symb     #permet aux classes de variable name et symb d'être lues et modifiées sans avoir besoin de méthode
 
-    $compteur = 0
-  def initialize(player_id, symb)   #called on Player.new
-  	puts "Nombre de parties: #{$compteur}"
-    puts "Bienvenue à vous!\n#{player_id}, Entre ton prénom : "  #ask the player in creation to set its nickname
+    $counter = 0
+  def initialize(player_id, symb)   #appeler par Player.new
+      puts "Nombre de parties: #{$counter}\n"
+      puts ""
+    puts "Bienvenue à vous!\n#{player_id}, Entre ton prénom : "  #demande au joueur son pseudo
     @name = gets.chomp                        #user nick
-    @symb = symb         #x or o depending on arg
+    @symb = symb         #le symb va dépendre de l'argument (classique le "X" et le "O")
   end
 end
 
-class Case  #case object
+class Case
   
-  attr_accessor :status  #access the status of the case called
+  attr_accessor :status  #accède au status de l'attribut appelé
 
   def initialize(val)
-    @status = val   #defaultly set on " " via board class
+    @status = val   #définie come un " " via la classe Board
   end
 end
 
-class Board   #set and print the board
+class Board 
 
-  def initialize   #generate all the cases in global variables
+  def initialize   #génère tous les cas dans des variables globales. A éviter dans le code...
     $c1 = Case.new(" ")
     $c2 = Case.new(" ")
     $c3 = Case.new(" ")
@@ -36,90 +37,90 @@ class Board   #set and print the board
     $c9 = Case.new(" ")
   end
 
-  def display_board  #print the grid via a string .... a bit dirty but functional
-     # \n means go to newline ... and a \ is needed before every special character (such as \-|/....)
+  def display_board  #affiche la grille via le string. Pas trouver bcp mieux...
+     #Le \n permet de passer à la ligne et le "\" est nécéssaire avant chaque caractères spéciaux (comme "\-|/")
 
      tab = " #{$c1.status} \| #{$c2.status} \| #{$c3.status} \n\-\-\-\|\-\-\-\|\-\-\- \n #{$c4.status} \| #{$c5.status} \| #{$c6.status} \n\-\-\-\|\-\-\-\|\-\-\- \n #{$c7.status} \| #{$c8.status} \| #{$c9.status} "
 
-    puts tab #prints the tab 
+    puts tab
   end
 
   def display_tuto
     tab = " 1 \| 2 \| 3 \n\-\-\-\|\-\-\-\|\-\-\- \n 4 \| 5 \| 6 \n\-\-\-\|\-\-\-\|\-\-\- \n 7 \| 8 \| 9 "
     puts "\nComment jouer:\nChoisis une case en tapant sa lettre:"
-    puts tab #prints the tutorial tab
+    puts tab
     puts "----------------------------\n"
-    sleep(2) #sleeps 2sec so you can read the quick tutorial
+    sleep(2) #est une fonction qui ralentie le programme durant la période donnée. Découverte surprise mais intéressante
   end
 end
 
 class Game
 
-  def initialize   #launches when Game.new is called
-    @turn = 0    #turn counter
-    @choice_left = ["1","2","3","4","5","6","7","8","9"] # list the none used cases in case a player pick a used one
+  def initialize   #se lance à l'appel de Game.new
+    @turn = 0
+    @choice_left = ["1","2","3","4","5","6","7","8","9"] #liste des cases non utilisées dans le cas ou le joueur derai une répétition
   end
 
-  def game_start  #where it begins
+  def game_start 
 
     puts "Initialisation ..."
     @players = []
-    @players[0] = Player.new("Joueur 1 (Tu sera le rouge)", "❤".colorize(:red)) # create player 1 on the players tab[0]
-    @players[1] = Player.new("Joueur 2 (Tu sera le bleu)", "❤".colorize(:blue)) #create player 2 on the players tab [1]
+    @players[0] = Player.new("Joueur 1 (Tu seras le rouge)", "❤".colorize(:red))
+    @players[1] = Player.new("Joueur 2 (Tu seras le bleu)", "❤".colorize(:blue))
 
     puts"\n---------------------------"
     puts "\nBienvenue au Tic Tac Toe! !"
     puts "Joueur 1: #{@players[0].name} ------ Joueur 2: #{@players[1].name}" 
 
-    @board = Board.new  #generate the board
-    @board.display_tuto #display it
+    @board = Board.new  #créer le board
+    @board.display_tuto
 
-    while true #infinite loop
-      play_turn #method in wich the player make it's choice
-      if win_combination_check == true   #checks in the methode is someone has won yet
-        puts "\nEt #{@players[@turn%2].name} gagne!" #display victory message :D
-        puts "Voulez vous rejouer? (y/n)"
+    while true #boucle infinie
+      play_turn #méthode qui permet au joueur de faire son choix
+      if win_combination_check == true   #vérifie les conditions de victoire
+        puts "\nEt #{@players[@turn%2].name} gagne!"
+        puts "Voulez-vous rejouer? (y/n)"
         answer = gets.chomp
             if answer == "y"
-                $compteur += 1
-        		game = Game.new #create a new game
-				game.game_start #calls the start method that launch the game
+                $counter += 1
+        		game = Game.new #crée une nouvelle partie
+				game.game_start #lance le nouveau jeu
 			else break
         	end
 
-      elsif @turn == 8  #if the turn counter reach 8 there is no possibility left 
+      elsif @turn == 8  #8 car pas plus de possibilité dans ce jeu (attention : ne fonctionnera pas avec des jeu plus complexe)
         puts "\nC'est une égalité!"
         puts "Voulez vous rejouer? (y/n)"
         answer = gets.chomp
         	if answer == "y"
-        		game = Game.new #create a new game
-				game.game_start #calls the start method that launch the game
+        		game = Game.new 
+				game.game_start
             else 
                 abort("Merci d'avoir joué !")
         	end
       end
-      @turn += 1 #iterate turn counter
+      @turn += 1 #passe au tour suivant
     end
   end
 
-  def play_turn #player's action's method
+  def play_turn #méthode d'action des joueurs
 
-    @current_player = @players[@turn%2].name  #ok so this means : if the turn is pair its player 1 else its player 2  and take its name
+    @current_player = @players[@turn%2].name  #Explication mon petit Alex : c'est une histoire de paire et d'impaire. Si c'est paire, c'est le joueur 1 sinon c'est le joueur 2 d'où le "%2"
     puts "\n C'est au tour de #{@current_player}, choisis une case:"
     @player_choice = ""
 
     while true
-      @player_choice = gets.chomp #player gives a number between 1..9
+      @player_choice = gets.chomp
 
-      unless @choice_left.include?(@player_choice) #if the player numb is not on the list of available cases it puts a message and displays the available cases
+      unless @choice_left.include?(@player_choice) #permet de prévenir le joueur des cases disponibles
         puts "\nChoisis une case qui est libre! \n Il te reste : #{@choice_left}"
       else
-        @choice_left.delete(@player_choice) #remove the number user inputed from the list of available cases
-        break #ends the loop
+        @choice_left.delete(@player_choice) #supprime la case choisie par le joueur
+        break #permet de casser la boucle infinie
       end
     end
 
-      case @player_choice #depending on what the user inputed and passed the checking it will modify the corresponding case
+      case @player_choice #permet de modifier dans le board en fonction du choix du joueur
       when "1"
         $c1.status = @players[@turn%2].symb
       when "2"
@@ -140,16 +141,15 @@ class Game
         $c9.status = @players[@turn%2].symb
       end
 
-      @board.display_board #displays the board updated  then go back to the game loop
+      @board.display_board #affiche le board modifié et c'est repartie pour la boucle
     end
 
 
-  def win_combination_check #checks if  there is a winner
+  def win_combination_check
 
-    #puts all the cases values in a tab
     @tab = [[$c1.status,$c2.status,$c3.status],[$c4.status,$c5.status,$c6.status],[$c7.status,$c8.status,$c9.status]]
 
-    #check all the lines and else all the column
+    #vérifie les lignes et les colonnes
     (0..2).each do |i|
       if @tab[i][0] == @tab[i][1] && @tab[i][1] == @tab[i][2]
         return true unless @tab[i][0] == " " #return true unless one of the  first value of any line is = to blank
@@ -161,13 +161,13 @@ end
 
 if ( @tab[0][0] == @tab[1][1] && @tab[1][1] == @tab[2][2] ) ||
   ( @tab[0][2] == @tab[1][1] && @tab[1][1] == @tab[2][0] )
-      return true unless @tab[1][1] == " " #returns true unless the 5th case (middle) is == to blank
+      return true unless @tab[1][1] == " " #donne "true" sauf si la 5ème cases et vide "== ?"
   else
-      return false #no winning combination found so return false
+      return false
     end
 end
 
 end
 
-game = Game.new #create a new game
-game.game_start #calls the start method that launch the game
+game = Game.new
+game.game_start
